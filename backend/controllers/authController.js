@@ -4,9 +4,11 @@ const passport = require('passport');
 const User = require('../models/users');
 require('dotenv').config();
 
-// @desc    Get current logged in user
-// @route   GET /auth/user
-// @access  Private
+/**
+ * @desc    Get current logged in user
+ * @route   GET /auth/user
+ * @access  Private
+ */
 exports.getCurrentUser = async (req, res) => {
     try {
         //query the db from the request's id
@@ -27,9 +29,11 @@ exports.getCurrentUser = async (req, res) => {
     }
 }
 
-// @desc    Handle Google OAuth authentication
-// @route   GET /auth/google/callback
-// @access  public
+/**
+ * @desc    Handle Google OAuth authentication
+ * @route   GET /auth/google/callback
+ * @access  public
+ */
 exports.googleCallback = async (req, res) => {
     try {
         //generate a jwt token by calling the method in the user model
@@ -49,9 +53,11 @@ exports.googleCallback = async (req, res) => {
 
 }
 
-// @desc    Handle user logout
-// @route   GET /auth/logout
-// @access  private
+/**
+ * @desc    Handle user logout
+ * @route   GET /auth/logout
+ * @access  private
+ */
 exports.logout = async (req, res) => {
     //reset the cookie settings
     res.cookie ('token', 'none', {
@@ -65,9 +71,11 @@ exports.logout = async (req, res) => {
     });
 }
 
-// @desc    Update user role
-// @route   PUT /auth/role
-// @access  private
+/**
+ * @desc    Update user role
+ * @route   PUT /auth/role
+ * @access  private
+ * */
 exports.updateRole = async (req, res) => {
     try {
         //ger role to be updated

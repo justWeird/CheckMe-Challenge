@@ -10,12 +10,12 @@ const {
     googleCallback,
     logout,
     updateRole
-} = require('../controllers/auth');
+} = require('../controllers/authController');
 
-const { protect } = require('../middleware/auth');
+const { protect } = require('../middleware/authMiddleware');
 
 //routes for google OAuth
-router.get('/google'. passport.authenticate('google', {scope: ['profile','email']}));
+router.get('/google', passport.authenticate('google', {scope: ['profile','email']}));
 router.post(
     '/google/callback',
     passport.authenticate('google', {

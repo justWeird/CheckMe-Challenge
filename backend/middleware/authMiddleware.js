@@ -5,7 +5,7 @@ const User = require("../models/users");
 require("dotenv").config();
 
 //define a protect middleware similar to client validation that can be tagged in a route call. This protects the route with JWT
-exports.protect = async function (req, res) {
+exports.protect = async function (req, res, next) {
     let token;
 
     //get the token from the header

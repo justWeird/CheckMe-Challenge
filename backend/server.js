@@ -7,8 +7,8 @@ const morgan = require('morgan')
 
 //import routes
 // const appointmentRouter = require('./routes/appointment');
-// const usersRouter = require('./routes/users');
-const authRouter = require('./routes/auth');
+const usersRouter = require('./routes/userRoutes');
+const authRouter = require('./routes/authRoutes');
 
 //create express app
 const app = express();
@@ -44,7 +44,7 @@ app.use((err, req, res, next) => {
 });
 
 // Routes
-// app.use('/users', usersRouter);
+app.use('/users', usersRouter);
 // app.use('/appointments', appointmentRouter);
 app.use('/auth', authRouter);
 
