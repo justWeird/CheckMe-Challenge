@@ -110,3 +110,29 @@ exports.updateRole = async (req, res) => {
         });
     }
 }
+
+exports.testToken = async (req, res) => {
+        try {
+            // Find a user to impersonate
+            const user = await User.findById("6801308b6bd167e4dd265e88");
+            if (!user) {
+                return res.status(404).json({ success: false, message: 'No users found' });
+            }
+
+            // Generate token for this user
+            const token = user.getSignedJwtToken();
+
+            res.status(200).json({
+                success: true,
+                token,
+                user: {
+                    id: user._id,
+                    name: user.name,
+                    email: user.email,
+                    role: user.role
+                }
+            });
+        } catch (error) {
+            res.status(500).json({ success: false, message: error.message });
+        }
+}

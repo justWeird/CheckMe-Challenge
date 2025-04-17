@@ -3,10 +3,13 @@ require('dotenv').config();
 const express = require('express');
 const {connectDB} = require('./config/database');
 const cors = require('cors');
-const morgan = require('morgan')
+const cookieParser = require('cookie-parser');
+const morgan = require('morgan');
+const passport = require('passport');
+const configPassport = require('./config/auth');
 
 //import routes
-// const appointmentRouter = require('./routes/appointment');
+const appointmentRouter = require('./routes/appointmentRoute');
 const usersRouter = require('./routes/userRoutes');
 const authRouter = require('./routes/authRoutes');
 
@@ -18,7 +21,7 @@ const port = process.env.PORT || 5050;
 connectDB();
 
 // Initialize Passport
-configPassport();
+configPassport(passport);
 
 //standard check endpoint. Set it before the middleware
 app.get('/status', (req, res) => {
@@ -27,10 +30,7 @@ app.get('/status', (req, res) => {
 
 
 //middleware
-app.use(cors({
-    origin: process.env.FRONTEND_URL,
-    credentials: true
-}));
+app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -45,7 +45,7 @@ app.use((err, req, res, next) => {
 
 // Routes
 app.use('/users', usersRouter);
-// app.use('/appointments', appointmentRouter);
+app.use('/appointments', appointmentRouter);
 app.use('/auth', authRouter);
 
 app.listen(port, () => {

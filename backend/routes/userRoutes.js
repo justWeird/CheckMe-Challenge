@@ -10,7 +10,7 @@ const {
 } = require('../controllers/userController');
 
 //import middleware authentication to ensure the correct role can access proper routes
-const { protect, authorize } = require('../controllers/authController');
+const { protect } = require('../middleware/authMiddleware');
 
 //path to get all doctors
 router.get('/doctors', protect, getDoctors);    //call protect middleware
@@ -18,7 +18,7 @@ router.get('/doctors', protect, getDoctors);    //call protect middleware
 //path to get user profile
 router.get('/profile', protect, getUserProfile);
 
-//path to get doctor's availabilit
+//path to get doctor's availability
 router.get('/doctors/:id/availability', protect, getDoctorAvailability);
 
 module.exports = router;

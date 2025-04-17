@@ -24,7 +24,7 @@ exports.createAppointment = async function (req, res) {
         const { doctorId, appointmentDate, appointmentTime, comments, patientAge, patientSex } = req.body;
 
         //validate that the important fields are present
-        if (!doctorId || !appointmentDate || !appointmentTime || patientAge || patientSex ) {
+        if (!doctorId || !appointmentDate || !appointmentTime || !patientAge || !patientSex ) {
             return res.status(400).json({
                 success: false,
                 message: 'Please enter a valid fields: doctorId, date, time, age and sex'
@@ -206,6 +206,8 @@ exports.updateAppointmentStatus = async function (req, res) {
         //find the appointment
         let appointment = await Appointment.findById(req.params.id);
 
+        console.log('[APPOINTMENT OBJECT]: ', appointment);
+
         //check if appointment exists
         if (!appointment) {
             return res.status(404).json({
@@ -219,6 +221,14 @@ exports.updateAppointmentStatus = async function (req, res) {
             return res.status(403).json({
                 success: false,
                 message: 'Not authorized to update this appointment'
+            });
+        }
+
+        //if the patient decided to cancel the appointment, then the doctor shouldn't have to do anything
+        if (appointment.status === 'CANCELLED'){
+            return res.status(409).json({
+                success: false,
+                message: 'Cannot update already cancelled appointment'
             });
         }
 

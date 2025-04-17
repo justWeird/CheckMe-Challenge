@@ -9,7 +9,8 @@ const {
     getCurrentUser,
     googleCallback,
     logout,
-    updateRole
+    updateRole,
+    testToken
 } = require('../controllers/authController');
 
 const { protect } = require('../middleware/authMiddleware');
@@ -28,6 +29,9 @@ router.post(
 //protected routes
 router.get('/user', protect, getCurrentUser);
 router.get('/logout', protect, logout);
-router.get('/role', protect, updateRole);
+router.put('/role', protect, updateRole);
+
+//test route
+router.post('/test-token', testToken);
 
 module.exports = router;

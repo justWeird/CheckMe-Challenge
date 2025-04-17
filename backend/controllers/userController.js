@@ -37,7 +37,7 @@ exports.getDoctors = async (req, res) => {
 exports.getUserProfile = async (req, res) => {
     try {
         //get the user object from the id
-        const user = await Users.findById(req.user.id);
+        const user = await User.findById(req.user.id);
 
         //if the user doesn't exist, then return a 404
         if (!user) {
