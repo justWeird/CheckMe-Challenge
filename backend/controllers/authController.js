@@ -46,7 +46,7 @@ exports.googleCallback = async (req, res) => {
         };
 
         //set the cookie and redirect to frontend
-        res.status(200).cookie('token', token, options).redirect(`${process.env.FRONTEND_URL}/auth/success?token=${token}`);
+        res.status(200).cookie('token', token, options).redirect(`${process.env.FRONTEND_URL}/login?token=${token}`);
     } catch (error) {
         res.redirect(`${process.env.FRONTEND_URL}/auth/failure`);
     }
@@ -114,7 +114,7 @@ exports.updateRole = async (req, res) => {
 exports.testToken = async (req, res) => {
         try {
             // Find a user to impersonate
-            const user = await User.findById("6801308b6bd167e4dd265e88");
+            const user = await User.findById("680265030f67a53838503bcd");
             if (!user) {
                 return res.status(404).json({ success: false, message: 'No users found' });
             }

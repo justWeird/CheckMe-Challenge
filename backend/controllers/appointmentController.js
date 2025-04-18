@@ -12,12 +12,18 @@ exports.createAppointment = async function (req, res) {
     //patients create appointments
     try {
         //confirm if the user is a patient
+
+        console.log('req.user: ', req.user);
+
         if (req.user.role !== 'patient'){
             return res.status(403).json({
                 success: false,
                 message: 'Only patients can create appointments.',
             });
         }
+
+        console.log("Incoming appointment data:", req.body);
+
 
         //if the user is a patient, then get all the needed information
         // for the doctor who the patient is creating an appointment to see
@@ -46,17 +52,26 @@ exports.createAppointment = async function (req, res) {
         //get the dateTime by combining the appointment date and time
         const dateTime = new Date(`${appointmentDate}T${appointmentTime}`);
 
+        console.log("About to create appointment with:", {
+            patient: req.user._id,
+            doctor: doctorId,
+            dateTime: new Date(`${appointmentDate}T${appointmentTime}`)
+        });
+
+
         //if the doctor exists, then create an appointment object
         const appointment = await Appointment.create({
-            patient: req.user.id,
+            patient: req.user._id,
             doctor: doctorId,
             patientName: req.user.name,
             patientAge: patientAge,
-            patientSex: patientSex,
+            patientSex: patientSex.toLowerCase(),
             dateTime: dateTime,
             comments: comments || '',
             status: 'PENDING'
         });
+
+        console.log('Modified Appointment data: ', appointment);
 
         res.status(201).json({
             success: true,
@@ -68,6 +83,8 @@ exports.createAppointment = async function (req, res) {
 
     } catch (error) {
         //catch error message from the model class
+         console.error("[CREATE APPOINTMENT ERROR]", error); // ✅ log full error
+
         if (error.message === 'You already have an appointment scheduled for this day' ||
             error.message === 'Doctor is not available at the requested time') {
             return res.status(400).json({
@@ -196,10 +213,10 @@ exports.updateAppointmentStatus = async function (req, res) {
         const { status } = req.body;
 
         //validate status
-        if (!status || !['APPROVED', 'DECLINED'].includes(status)) {
+        if (!status || !['APPROVED', 'DECLINED', 'COMPLETED'].includes(status)) {
             return res.status(400).json({
                 success: false,
-                message: 'Please provide a valid status (APPROVED or DECLINED)'
+                message: 'Please provide a valid status (APPROVED, DECLINED, or COMPLETED)'
             });
         }
 

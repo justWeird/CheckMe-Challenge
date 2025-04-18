@@ -17,6 +17,12 @@ const authRouter = require('./routes/authRoutes');
 const app = express();
 const port = process.env.PORT || 5050;
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger-output.json');
+
+app.use('/api-docs', swaggerUi.serve);
+app.get('/api-docs', swaggerUi.setup(swaggerDocument));
+
 //test db connection
 connectDB();
 
@@ -30,7 +36,9 @@ app.get('/status', (req, res) => {
 
 
 //middleware
-app.use(cors());
+app.use(cors(
+
+));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

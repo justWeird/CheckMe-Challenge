@@ -2,7 +2,7 @@
 ### Base URL Variables
 @baseUrl = http://localhost:5050
 @authTokenDoctor = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDEzMDhiNmJkMTY3ZTRkZDI2NWU4NSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NDQ5MDk5NDAsImV4cCI6MTc0NzUwMTk0MH0.XWsCT-EUgRuWS7AH9DfsbQR0CVyRy17GJKP7bW-V-d8
-@authTokenPatient = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDEzMDhiNmJkMTY3ZTRkZDI2NWU4OCIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzQ0OTI1MDk2LCJleHAiOjE3NDc1MTcwOTZ9.WbxtO3OrTjF7RzAsNnBiEBkM2AOgUDB_6YysB7sxhVc
+@authTokenPatient = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDI2NTAzMGY2N2E1MzgzODUwM2JjZCIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NDQ5ODg0NjksImV4cCI6MTc0NzU4MDQ2OX0.fBL211X9ShVOv9_p6zzFjNXOO9yRpJE-yPQk39lmTRw
 
 ### 1. HEALTH CHECK
 ### Verify API is running
@@ -21,7 +21,7 @@ Content-Type: application/json
 
 ### 2.2 Update user role
 PUT {{baseUrl}}/auth/role
-Authorization: Bearer {{authTokenDoctor}}
+Authorization: Bearer {{authTokenPatient}}
 Content-Type: application/json
 
 {

@@ -16,8 +16,16 @@ const {
 const { protect } = require('../middleware/authMiddleware');
 
 //routes for google OAuth
-router.get('/google', passport.authenticate('google', {scope: ['profile','email']}));
-router.post(
+router.get('/google', (req, res, next) => {
+    const clientId = req.query.client_id;
+
+    passport.authenticate('google', {
+        scope: ['profile', 'email'],
+        state: clientId // Safely pass client_id as OAuth state
+    })(req, res, next);
+});
+
+router.get(
     '/google/callback',
     passport.authenticate('google', {
         session: false,
