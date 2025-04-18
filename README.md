@@ -79,6 +79,13 @@ The frontend is designed to integrate with a RESTful API backend. The integratio
 
 All API calls have been set up in `src/services/api.ts` with commented placeholders.
 
+To preview the detailed api, navigate to the swagger-ui
+
+```bash
+   http://localhost:5050/api-docs/
+  
+   ```
+
 ## Project Structure
 
 ```
@@ -104,14 +111,25 @@ src/
 
 ## Deployment
 
-1. Build the production version:
+1. Run the backend service:
    ```bash
-   npm run build
-   # or
-   yarn build
+   cd backend
+   
+   #then run npm start to start the server
+   
+   npm start
+   
    ```
 
-2. Deploy the contents of the `dist` folder to your hosting service.
+2. Run the frontend service:
+   ```bash
+      cd frontend
+      
+      #then run npm start to start the server
+      
+      npm run dev
+      
+      ```  
 
 ## License
 
