@@ -36,8 +36,10 @@ app.get('/status', (req, res) => {
 
 
 //middleware
-app.use(cors(
-
+app.use(cors({
+        origin: "http://localhost:8080",
+        credentials: true
+    }
 ));
 app.use(cookieParser());
 app.use(express.json());
