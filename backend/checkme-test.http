@@ -1,0 +1,163 @@
+### CheckMe API Test File
+### Base URL Variables
+@baseUrl = http://localhost:5050
+@authTokenDoctor = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDEzMDhiNmJkMTY3ZTRkZDI2NWU4NSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NDQ5MDk5NDAsImV4cCI6MTc0NzUwMTk0MH0.XWsCT-EUgRuWS7AH9DfsbQR0CVyRy17GJKP7bW-V-d8
+@authTokenPatient = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDI2NTAzMGY2N2E1MzgzODUwM2JjZCIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3NDQ5ODg0NjksImV4cCI6MTc0NzU4MDQ2OX0.fBL211X9ShVOv9_p6zzFjNXOO9yRpJE-yPQk39lmTRw
+
+### 1. HEALTH CHECK
+### Verify API is running
+GET {{baseUrl}}/status
+
+### 2. AUTHENTICATION FLOW
+### NOTE: Google OAuth requires browser interaction, so we'll test protected endpoints after manual auth
+POST {{baseUrl}}/auth/test-token
+
+### 2.1 Get current user (requires auth)
+# First login manually via browser at: http://localhost:5050/auth/google
+# Then copy the token from your browser cookies and set it as a request header below
+GET {{baseUrl}}/auth/user
+Authorization: Bearer {{authTokenDoctor}}
+Content-Type: application/json
+
+### 2.2 Update user role
+PUT {{baseUrl}}/auth/role
+Authorization: Bearer {{authTokenPatient}}
+Content-Type: application/json
+
+{
+  "role": "doctor"
+}
+
+### 2.3 Logout
+GET {{baseUrl}}/auth/logout
+Authorization: Bearer {{authTokenDoctor}}
+
+### 3. USER MANAGEMENT
+
+### 3.1 Get all doctors (for appointment booking)
+GET {{baseUrl}}/users/doctors
+Authorization: Bearer {{authTokenDoctor}}
+
+### 3.2 Get user profile
+GET {{baseUrl}}/users/profile
+Authorization: Bearer {{authTokenPatient}}
+
+
+### 3.4 Get doctor availability (requires doctor ID)
+# Replace DOCTOR_ID with an actual doctor ID from the system
+GET {{baseUrl}}/users/doctors/6801308b6bd167e4dd265e85/availability?date=2025-04-18
+Authorization: Bearer {{authTokenDoctor}}
+
+### 4. APPOINTMENT MANAGEMENT (PATIENT ROLE)
+# Need to switch to patient role first if currently doctor
+
+### 4.1 Create appointment (patient only)
+POST {{baseUrl}}/appointments
+Authorization: Bearer {{authTokenPatient}}
+Content-Type: application/json
+
+{
+  "doctorId": "6801308b6bd167e4dd265e85",
+  "appointmentDate": "2025-04-20",
+  "appointmentTime": "14:00",
+  "comments": "Regular checkup",
+  "patientAge": 35,
+  "patientSex": "female"
+}
+
+### 4.2 Get all appointments (for the logged-in patient)
+GET {{baseUrl}}/appointments
+Authorization: Bearer {{authTokenPatient}}
+
+### 4.2.2 Get all appointments (for the logged-in doctor)
+GET {{baseUrl}}/appointments
+Authorization: Bearer {{authTokenDoctor}}
+
+### 4.3 Get single appointment by ID
+# Replace APPOINTMENT_ID with an actual appointment ID
+GET {{baseUrl}}/appointments/68017332d01e9820efa7c6c6
+Authorization: Bearer {{authTokenDoctor}}
+
+### 4.4 Update appointment (patient only)
+# Replace APPOINTMENT_ID with an actual appointment ID
+PUT {{baseUrl}}/appointments/68017332d01e9820efa7c6c6
+Authorization: Bearer {{authTokenPatient}}
+Content-Type: application/json
+
+{
+  "appointmentDate": "2025-04-21",
+  "appointmentTime": "15:00",
+  "comments": "Updated comments"
+}
+
+### 4.5 Cancel appointment (patient only)
+# Replace APPOINTMENT_ID with an actual appointment ID
+PUT {{baseUrl}}/appointments/68017332d01e9820efa7c6c6/cancel
+Authorization: Bearer {{authTokenPatient}}
+
+### 5. APPOINTMENT MANAGEMENT (DOCTOR ROLE)
+# Need to switch to doctor role first
+
+### 5.1 Get all appointments as doctor
+GET {{baseUrl}}/appointments
+Authorization: Bearer {{authTokenDoctor}}
+
+### 5.2 Update appointment status (doctor only)
+# Replace APPOINTMENT_ID with an actual appointment ID
+PUT {{baseUrl}}/appointments/68017332d01e9820efa7c6c6/status
+Authorization: Bearer {{authTokenDoctor}}
+Content-Type: application/json
+
+{
+  "status": "APPROVED"
+}
+
+### 6. TESTING VALIDATION & ERROR HANDLING
+
+### 6.1 Create appointment with missing fields
+POST {{baseUrl}}/appointments
+Authorization: Bearer {{authTokenPatient}}
+Content-Type: application/json
+
+{
+  "doctorId": "DOCTOR_ID_HERE",
+  "appointmentDate": "2025-04-20"
+}
+
+### 6.2 Create appointment with invalid doctor
+POST {{baseUrl}}/appointments
+Authorization: Bearer {{authTokenPatient}}
+Content-Type: application/json
+
+{
+  "doctorId": "6801308b6bd167e4dd265e88",
+  "appointmentDate": "2025-04-20",
+  "appointmentTime": "14:00",
+  "patientAge": 35,
+  "patientSex": "female"
+}
+
+### 6.3 Double booking test (create appointments at same time)
+# Run this twice to test conflict detection
+POST {{baseUrl}}/appointments
+Authorization: Bearer {{authTokenPatient}}
+Content-Type: application/json
+
+{
+  "doctorId": "6801308b6bd167e4dd265e85",
+  "appointmentDate": "2025-04-22",
+  "appointmentTime": "10:00",
+  "patientAge": 35,
+  "patientSex": "female",
+  "comments": "Test double booking"
+}
+
+### 6.4 Access control test - patient trying to update status
+# Should fail with 403 Forbidden
+PUT {{baseUrl}}/appointments/68017a51e6cd61869df514ee/status
+Authorization: Bearer {{authTokenPatient}}
+Content-Type: application/json
+
+{
+  "status": "APPROVED"
+}
