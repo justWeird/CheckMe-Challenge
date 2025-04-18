@@ -62,21 +62,19 @@ AppointmentSchema.pre('save', async function(next) {
     if (this.isNew || this.isModified('dateTime')) {
         const existingAppointment = await this.constructor.findOne({
             patient: this.patient,
-            dateTime: {
-                $gte: new Date(new Date(this.dateTime).setHours(0, 0, 0)),
-                $lt: new Date(new Date(this.dateTime).setHours(23, 59, 59))
-            },
+            dateTime: this.dateTime, // ⬅️ direct match on datetime
             _id: { $ne: this._id },
             status: { $nin: ['declined', 'cancelled'] }
         });
 
         if (existingAppointment) {
-            const error = new Error('You already have an appointment scheduled for this day');
+            const error = new Error('You already have an appointment at this exact time');
             return next(error);
         }
     }
     next();
 });
+
 
 //check if doctor is available at the requested time
 AppointmentSchema.pre('save', async function(next) {
